@@ -30,8 +30,11 @@ int main() {
 
 
 	std::vector<Particle> particles;
+	//particles.push_back(Particle(sf::Vector2f(150, 100), sf::Vector2f(0, 0), 5));
+	//particles.push_back(Particle(sf::Vector2f(150, 200), sf::Vector2f(0, 0), 5));
+	particles.push_back(Particle(sf::Vector2f(150, 150), sf::Vector2f(0, 0), 10.0));
 	for (int i = 0; i < 50; i++) {
-		particles.push_back(Particle(randPos(), randVel(), 1, i));
+		particles.push_back(Particle(randPos(), randVel(), 1));
 	}
 
 	Game game(particles);

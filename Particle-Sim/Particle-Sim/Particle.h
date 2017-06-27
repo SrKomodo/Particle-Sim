@@ -3,14 +3,13 @@
 class Particle {
 public:
 	Particle();
-	Particle(sf::Vector2f pos, sf::Vector2f velToLoad, float massToLoad, unsigned int idToLoad);
+	Particle(sf::Vector2f pos, sf::Vector2f velToLoad, float massToLoad);
 
 	void draw(sf::RenderWindow* window);
 	void updateLogic(sf::Vector2f forces);
 
 	sf::Vector2f getPosition();
 	float getMass();
-	unsigned int id;
 
 private:
 	float mass;
@@ -27,14 +26,13 @@ inline Particle::Particle() {
 	mass = 1;
 }
 
-inline Particle::Particle(sf::Vector2f posToLoad, sf::Vector2f velToLoad, float massToLoad, unsigned int idToLoad) {
-	sprite = sf::CircleShape(5.0f);
+inline Particle::Particle(sf::Vector2f posToLoad, sf::Vector2f velToLoad, float massToLoad) {
+	sprite = sf::CircleShape(massToLoad * 2);
+	sprite.setOrigin(sf::Vector2f(massToLoad * 2, massToLoad * 2));
 	sprite.setPosition(pos);
 	pos = posToLoad;
 	vel = velToLoad;
 	mass = massToLoad;
-	id = idToLoad;
-	sprite.setOrigin(sf::Vector2f(2.5f, 2.5f));
 }
 
 inline void Particle::draw(sf::RenderWindow* window) {
