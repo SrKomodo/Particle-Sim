@@ -22,13 +22,36 @@ inline sf::Vector2f Game::getForcesAtPoint(Particle* p1, int pi2) {
 	sf::Vector2f forces(0, 0);
 	for (int pi1 = 0; pi1 < particles.size(); pi1++) {
 		Particle* p2 = &particles.at(pi1);
-		if (pi1 != pi2) {
+		if (pi1 != pi2 && p2) {
 			float r = distance(p1->getPosition(), p2->getPosition());
 
-			if (r <= std::max(p1->getMass(), p1->getMass()) / 2) {
-				particles.push_back(Particle(p1->getPosition(), sf::Vector2f(0, 0), p1->getMass() + p2->getMass()));
-				particles.erase(particles.begin() + pi1);
+			if (r <= std::max(p1->getMass(), p1->getMass()) * 2) {
+				std::cout
+					<< "Colission!" << std::endl
+					<< "=================" << std::endl
+					<< "Particle 1" << std::endl
+					<< "Position: " << p1->getPosition().x << " " << p1->getPosition().y << std::endl
+					<< "Velocity: " << p1->getVelocity().x << " " << p1->getVelocity().y << std::endl
+					<< "Mass: " << p1->getMass() << std::endl
+					<< "=================" << std::endl
+					<< "Particle 2" << std::endl
+					<< "Position: " << p2->getPosition().x << " " << p2->getPosition().y << std::endl
+					<< "Velocity: " << p2->getVelocity().x << " " << p2->getVelocity().y << std::endl
+					<< "Mass: " << p2->getMass() << std::endl;
+				p1->setPosition(sf::Vector2f(
+					(p1->getPosition().x + p2->getPosition().x) / 2,
+					(p1->getPosition().y + p2->getPosition().y) / 2
+				));
+				p1->setVelocity(p1->getVelocity() + p2->getVelocity());
+				p1->setMass(p1->getMass() + p2->getMass());
+				std::cout
+					<< "=================" << std::endl
+					<< "New Particle" << std::endl
+					<< "Position: " << p1->getPosition().x << " " << p1->getPosition().y << std::endl
+					<< "Velocity: " << p1->getVelocity().x << " " << p1->getVelocity().y << std::endl
+					<< "Mass: " << p1->getMass() << std::endl << std::endl;
 				particles.erase(particles.begin() + pi2);
+				break;
 			}
 
 			float m1 = p1->getMass();
@@ -53,7 +76,9 @@ inline void Game::draw(sf::RenderWindow* window) {
 
 inline void Game::updateLogic() {
 	for (int i = 0; i < particles.size(); i++) {
-		particles.at(i).updateLogic(getForcesAtPoint(&particles.at(i), i));
+		if (&particles.at(i)) {
+			particles.at(i).updateLogic(getForcesAtPoint(&particles.at(i), i));
+		}
 	}
 }
 

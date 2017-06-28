@@ -9,7 +9,12 @@ public:
 	void updateLogic(sf::Vector2f forces);
 
 	sf::Vector2f getPosition();
+	sf::Vector2f getVelocity();
 	float getMass();
+
+	void setPosition(sf::Vector2f posToLoad);
+	void setVelocity(sf::Vector2f velToLoad);
+	void setMass(float massToLoad);
 
 private:
 	float mass;
@@ -45,10 +50,13 @@ inline void Particle::updateLogic(sf::Vector2f forces) {
 	sprite.setPosition(pos);
 }
 
-inline sf::Vector2f Particle::getPosition() {
-	return pos;
-}
+inline sf::Vector2f Particle::getPosition() { return pos; }
+inline sf::Vector2f Particle::getVelocity() { return vel; }
+inline float Particle::getMass() { return mass; }
 
-inline float Particle::getMass() {
-	return mass;
+inline void Particle::setPosition(sf::Vector2f posToLoad) { pos = posToLoad; }
+inline void Particle::setVelocity(sf::Vector2f velToLoad) { vel = velToLoad; }
+inline void Particle::setMass(float massToLoad) {
+	mass = massToLoad;
+	sprite.setRadius(massToLoad * 2);
 }
