@@ -12,6 +12,8 @@ public:
 	sf::Vector2f getVelocity();
 	float getMass();
 
+	unsigned int id;
+
 	void setPosition(sf::Vector2f posToLoad);
 	void setVelocity(sf::Vector2f velToLoad);
 	void setMass(float massToLoad);

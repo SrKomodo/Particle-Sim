@@ -76,7 +76,10 @@ inline void Game::draw(sf::RenderWindow* window) {
 
 inline void Game::updateLogic() {
 	for (int i = 0; i < particles.size(); i++) {
-		if (&particles.at(i)) {
+		particles.at(i).id = i;
+	}
+	for (int i = 0; i < particles.size(); i++) {
+		if (particles.at(i).id != (unsigned int) i) {
 			particles.at(i).updateLogic(getForcesAtPoint(&particles.at(i), i));
 		}
 	}
