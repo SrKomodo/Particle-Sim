@@ -22,7 +22,7 @@ inline sf::Vector2f Game::getForcesAtPoint(Particle* p1, int pi2) {
 	sf::Vector2f forces(0, 0);
 	for (int pi1 = 0; pi1 < particles.size(); pi1++) {
 		Particle* p2 = &particles.at(pi1);
-		if (pi1 != pi2 && p2) {
+		if (pi1 != pi2) {
 			float r = distance(p1->getPosition(), p2->getPosition());
 
 			if (r <= std::max(p1->getMass(), p1->getMass()) * 2) {
@@ -50,7 +50,7 @@ inline sf::Vector2f Game::getForcesAtPoint(Particle* p1, int pi2) {
 					<< "Position: " << p1->getPosition().x << " " << p1->getPosition().y << std::endl
 					<< "Velocity: " << p1->getVelocity().x << " " << p1->getVelocity().y << std::endl
 					<< "Mass: " << p1->getMass() << std::endl << std::endl;
-				particles.erase(particles.begin() + pi2);
+				//particles.erase(particles.begin() + pi1);
 				break;
 			}
 
@@ -79,7 +79,7 @@ inline void Game::updateLogic() {
 		particles.at(i).id = i;
 	}
 	for (int i = 0; i < particles.size(); i++) {
-		if (particles.at(i).id != (unsigned int) i) {
+		if (particles.at(i).id == i) {
 			particles.at(i).updateLogic(getForcesAtPoint(&particles.at(i), i));
 		}
 	}
