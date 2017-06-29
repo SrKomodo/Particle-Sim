@@ -8,8 +8,8 @@
 #include "Game.h"
 
 std::default_random_engine gen((unsigned int)std::chrono::system_clock::now().time_since_epoch().count());
-std::uniform_real_distribution<float> posDist(0.f, 300.f);
-std::uniform_real_distribution<float> velDist(-1.f, 1.f);
+std::uniform_real_distribution<float> posDist(-150.f, 150.f);
+std::uniform_real_distribution<float> velDist(-.00001f, .00001f);
 
 sf::Vector2f randPos() {
 	return sf::Vector2f(posDist(gen), posDist(gen));
@@ -20,22 +20,33 @@ sf::Vector2f randVel() {
 }
 
 int main() {
+	sf::ContextSettings settings;
+	settings.antialiasingLevel = 8;
 
-	sf::RenderWindow window(sf::VideoMode(300, 300), "Particle Simulator");
+	sf::RenderWindow window(sf::VideoMode(640, 480), "Particle Simulator", sf::Style::Default, settings);
+	sf::View view(window.getDefaultView());
+	view.setCenter(sf::Vector2f(0, 0));
+	window.setView(view);
+
+	sf::Shader shader;
+	shader.loadFromFile("Fragment.glsl", sf::Shader::Fragment);
+	shader.setUniform("texture", sf::Shader::CurrentTexture);
 
 	sf::Event event;
 	sf::Clock clock;
 	sf::Time accumulator = sf::Time::Zero;
 	sf::Time ups = sf::seconds(1.f / 60.f);
 
+	sf::RenderTexture outRender;
+	outRender.create(640, 480);
 
 	std::vector<Particle> particles;
-	particles.push_back(Particle(sf::Vector2f(150, 100), sf::Vector2f(0, 0), 5));
-	particles.push_back(Particle(sf::Vector2f(150, 200), sf::Vector2f(0, 0), 5));
-	/*particles.push_back(Particle(sf::Vector2f(150, 150), sf::Vector2f(0, 0), 10.0));
+	//particles.push_back(Particle(sf::Vector2f(150, 100), sf::Vector2f(0, 0), 5));
+	//particles.push_back(Particle(sf::Vector2f(150, 200), sf::Vector2f(0, 0), 5));
+	//particles.push_back(Particle(sf::Vector2f(150, 150), sf::Vector2f(0, 0), 10.0));
 	for (int i = 0; i < 50; i++) {
 		particles.push_back(Particle(randPos(), randVel(), 1));
-	}*/
+	}
 
 	Game game(particles);
 
@@ -47,8 +58,44 @@ int main() {
 			case sf::Event::Closed:
 				window.close();
 				break;
+
+			case sf::Event::MouseWheelMoved:
+				std::cout << event.mouseWheel.delta << std::endl;
+				if (event.mouseWheel.delta > 0) {
+					view.zoom(1.2);
+				}
+				else {
+					view.zoom(0.8);
+				}
+				break;
+
+			case sf::Event::KeyPressed:
+				if (event.key.code == sf::Keyboard::Z) {
+					game.simSpeed *= 10;
+					std::cout << game.simSpeed << std::endl;
+				}
+				else if (event.key.code == sf::Keyboard::X) {
+					game.simSpeed /= 10;
+					std::cout << game.simSpeed << std::endl;
+				}
 			}
 		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+			view.move(sf::Vector2f(-.5, 0));
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+			view.move(sf::Vector2f(.5, 0));
+		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+			view.move(sf::Vector2f(0, -.5));
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+			view.move(sf::Vector2f(0, .5));
+		}
+		window.setView(view);
+
 
 		while (accumulator > ups) {
 			accumulator -= ups;
@@ -56,7 +103,7 @@ int main() {
 		}
 
 		window.clear();
-		game.draw(&window);
+		game.draw(&outRender);
 		window.display();
 		accumulator += clock.restart();
 

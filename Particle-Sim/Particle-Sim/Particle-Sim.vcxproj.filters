@@ -16,6 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Fragment.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
