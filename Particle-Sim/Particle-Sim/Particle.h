@@ -5,7 +5,7 @@ public:
 	Particle();
 	Particle(sf::Vector2f pos, sf::Vector2f velToLoad, float massToLoad);
 
-	void draw(sf::RenderTexture* window);
+	void draw(sf::RenderWindow* window);
 	void updateLogic(sf::Vector2f forces, int simSpeed);
 
 	sf::Vector2f getPosition();
@@ -42,7 +42,7 @@ inline Particle::Particle(sf::Vector2f posToLoad, sf::Vector2f velToLoad, float 
 	mass = massToLoad;
 }
 
-inline void Particle::draw(sf::RenderTexture* window) {
+inline void Particle::draw(sf::RenderWindow* window) {
 	window->draw(sprite);
 }
 
@@ -61,4 +61,5 @@ inline void Particle::setVelocity(sf::Vector2f velToLoad) { vel = velToLoad; }
 inline void Particle::setMass(float massToLoad) {
 	mass = massToLoad;
 	sprite.setRadius(massToLoad * 2);
+	sprite.setOrigin(sf::Vector2f(massToLoad * 2, massToLoad * 2));
 }

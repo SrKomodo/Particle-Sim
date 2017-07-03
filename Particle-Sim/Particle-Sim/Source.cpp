@@ -8,8 +8,8 @@
 #include "Game.h"
 
 std::default_random_engine gen((unsigned int)std::chrono::system_clock::now().time_since_epoch().count());
-std::uniform_real_distribution<float> posDist(-150.f, 150.f);
-std::uniform_real_distribution<float> velDist(-.00001f, .00001f);
+std::uniform_real_distribution<float> posDist(-1500.f, 1500.f);
+std::uniform_real_distribution<float> velDist(-1.f / 100000000, 1.f / 100000000);
 
 sf::Vector2f randPos() {
 	return sf::Vector2f(posDist(gen), posDist(gen));
@@ -28,24 +28,19 @@ int main() {
 	view.setCenter(sf::Vector2f(0, 0));
 	window.setView(view);
 
-	sf::Shader shader;
-	shader.loadFromFile("Fragment.glsl", sf::Shader::Fragment);
-	shader.setUniform("texture", sf::Shader::CurrentTexture);
-
 	sf::Event event;
 	sf::Clock clock;
 	sf::Time accumulator = sf::Time::Zero;
 	sf::Time ups = sf::seconds(1.f / 60.f);
 
-	sf::RenderTexture outRender;
-	outRender.create(640, 480);
+	float zoom = 1;
 
 	std::vector<Particle> particles;
-	//particles.push_back(Particle(sf::Vector2f(150, 100), sf::Vector2f(0, 0), 5));
-	//particles.push_back(Particle(sf::Vector2f(150, 200), sf::Vector2f(0, 0), 5));
+	//particles.push_back(Particle(sf::Vector2f(150, 100), sf::Vector2f(0, 0), 50));
+	//particles.push_back(Particle(sf::Vector2f(150, 200), sf::Vector2f(0, 0), 50));
 	//particles.push_back(Particle(sf::Vector2f(150, 150), sf::Vector2f(0, 0), 10.0));
 	for (int i = 0; i < 50; i++) {
-		particles.push_back(Particle(randPos(), randVel(), 1));
+		particles.push_back(Particle(randPos(), randVel(), 10));
 	}
 
 	Game game(particles);
@@ -62,10 +57,14 @@ int main() {
 			case sf::Event::MouseWheelMoved:
 				std::cout << event.mouseWheel.delta << std::endl;
 				if (event.mouseWheel.delta > 0) {
-					view.zoom(1.2);
+					view.zoom(0.8);
+					zoom *= 0.8;
+					std::cout << zoom << std::endl;
 				}
 				else {
-					view.zoom(0.8);
+					view.zoom(1.2);
+					zoom *= 1.2;
+					std::cout << zoom << std::endl;
 				}
 				break;
 
@@ -82,17 +81,17 @@ int main() {
 		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-			view.move(sf::Vector2f(-.5, 0));
+			view.move(sf::Vector2f(-.5 * zoom, 0));
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-			view.move(sf::Vector2f(.5, 0));
+			view.move(sf::Vector2f(.5 * zoom, 0));
 		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-			view.move(sf::Vector2f(0, -.5));
+			view.move(sf::Vector2f(0, -.5 * zoom));
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-			view.move(sf::Vector2f(0, .5));
+			view.move(sf::Vector2f(0, .5 * zoom));
 		}
 		window.setView(view);
 
@@ -103,7 +102,7 @@ int main() {
 		}
 
 		window.clear();
-		game.draw(&outRender);
+		game.draw(&window);
 		window.display();
 		accumulator += clock.restart();
 
