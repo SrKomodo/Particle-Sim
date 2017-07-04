@@ -56,31 +56,26 @@ int main() {
 				break;
 
 			case sf::Event::MouseWheelMoved:
-				std::cout << event.mouseWheel.delta << std::endl;
 				if (event.mouseWheel.delta > 0) {
 					view.zoom(0.8);
 					zoom *= 0.8;
-					std::cout << zoom << std::endl;
 				}
 				else {
 					view.zoom(1.2);
 					zoom *= 1.2;
-					std::cout << zoom << std::endl;
 				}
 				break;
 
 			case sf::Event::KeyPressed:
 				if (event.key.code == sf::Keyboard::Z) {
 					game.simSpeed *= 10;
-					std::cout << game.simSpeed << std::endl;
 				}
 				else if (event.key.code == sf::Keyboard::X) {
 					game.simSpeed /= 10;
-					std::cout << game.simSpeed << std::endl;
 				}
 			}
 		}
-
+		//kill me pls
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
 			view.move(sf::Vector2f(-.5 * zoom, 0));
 		}
