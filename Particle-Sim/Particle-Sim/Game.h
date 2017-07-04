@@ -33,17 +33,30 @@ sf::Vector2f Game::getForcesAtPoint(Particle* p1, int pi1) {
 
 			if (r <= p1->getMass() * 2 + p2->getMass() * 2) {
 
-				p1->setMass(p1->getMass() + p2->getMass());
+
+				float yeOldePosition = p1->getPosition().y;
 
 				p1->setPosition(sf::Vector2f(
 					((p1->getPosition().x * p1->getMass()) + (p2->getPosition().x * p2->getMass())) / (p1->getMass() + p2->getMass()),
 					((p1->getPosition().y * p1->getMass()) + (p2->getPosition().y * p2->getMass())) / (p1->getMass() + p2->getMass())
 				));
 
-				p1->setVelocity(sf::Vector2f(
-					p1->getMass() / p1->getVelocity().x + p2->getMass() / p2->getVelocity().x,
-					p1->getMass() / p1->getVelocity().y + p2->getMass() / p2->getVelocity().y
-				));
+				p1->setMass(p1->getMass() + p2->getMass());
+
+				if (p1->getMass() >= p2->getMass()) {
+					p1->setVelocity(sf::Vector2f(
+						p1->getVelocity().x + ((p2->getVelocity().x / p1->getMass()) * p2->getMass()),
+						p1->getVelocity().y + ((p2->getVelocity().y / p1->getMass()) * p2->getMass())
+					));
+				}
+				else {
+					p1->setVelocity(sf::Vector2f(
+						p2->getVelocity().x + ((p1->getVelocity().x / p2->getMass()) * p1->getMass()),
+						p2->getVelocity().y + ((p1->getVelocity().y / p2->getMass()) * p1->getMass())
+					));
+				}
+
+				std::cout << yeOldePosition << " " << p2->getPosition().y << " = " << p1->getPosition().y << std::endl;
 
 				particles.erase(particles.begin() + pi2);
 			}

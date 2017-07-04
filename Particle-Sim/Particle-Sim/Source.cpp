@@ -36,14 +36,15 @@ int main() {
 	float zoom = 1;
 
 	std::vector<Particle> particles;
-	//particles.push_back(Particle(sf::Vector2f(150, 100), sf::Vector2f(0, 0), 50));
-	//particles.push_back(Particle(sf::Vector2f(150, 200), sf::Vector2f(0, 0), 50));
-	//particles.push_back(Particle(sf::Vector2f(150, 150), sf::Vector2f(0, 0), 10.0));
+	//particles.push_back(Particle(sf::Vector2f(100, -100), sf::Vector2f(0, 0), 10));
+	//particles.push_back(Particle(sf::Vector2f(100, 100), sf::Vector2f(0, 0), 50));
 	for (int i = 0; i < 50; i++) {
 		particles.push_back(Particle(randPos(), randVel(), 10));
 	}
+	particles.push_back(Particle(sf::Vector2f(10000000, 10000000), sf::Vector2f(10000, 0), 1));
 
 	Game game(particles);
+	game.simSpeed = 100000;
 
 	while (window.isOpen()) {
 
