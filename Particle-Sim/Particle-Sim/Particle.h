@@ -1,65 +1,33 @@
 #pragma once
 
-class Particle {
+class Particle
+{
 public:
-	Particle();
-	Particle(sf::Vector2f pos, sf::Vector2f velToLoad, float massToLoad);
-
-	void draw(sf::RenderWindow* window);
-	void updateLogic(sf::Vector2f forces, int simSpeed);
-
-	sf::Vector2f getPosition();
-	sf::Vector2f getVelocity();
-	float getMass();
-
-	unsigned int id;
-
-	void setPosition(sf::Vector2f posToLoad);
-	void setVelocity(sf::Vector2f velToLoad);
-	void setMass(float massToLoad);
+	Particle(sf::Vector2f newPos, sf::Vector2f newVel, double newRadius);
+	void draw(sf::RenderWindow &win);
+	void updateLogic(float deltaT);
 
 private:
-	float mass;
+	sf::CircleShape sprite;
 	sf::Vector2f pos;
 	sf::Vector2f vel;
-	sf::CircleShape sprite;
+	double radius;
 };
 
-inline Particle::Particle() {
-	sprite = sf::CircleShape(5.0f);
-	sprite.setOrigin(sf::Vector2f(2.5f, 2.5f));
-	pos = sf::Vector2f(0, 0);
-	vel = sf::Vector2f(0, 0);
-	mass = 1;
+Particle::Particle(sf::Vector2f newPos, sf::Vector2f newVel, double newRadius) {
+	sprite = sf::CircleShape(newRadius);
+	sprite.setPosition(newPos);
+
+	radius = newRadius;
+	pos = newPos;
+	vel = newVel;
 }
 
-inline Particle::Particle(sf::Vector2f posToLoad, sf::Vector2f velToLoad, float massToLoad) {
-	sprite = sf::CircleShape(massToLoad * 2);
-	sprite.setOrigin(sf::Vector2f(massToLoad * 2, massToLoad * 2));
+inline void Particle::draw(sf::RenderWindow &win) {
+	win.draw(sprite);
+}
+
+void Particle::updateLogic(float deltaT) {
+	pos += vel * deltaT;
 	sprite.setPosition(pos);
-	pos = posToLoad;
-	vel = velToLoad;
-	mass = massToLoad;
-}
-
-inline void Particle::draw(sf::RenderWindow* window) {
-	window->draw(sprite);
-}
-
-inline void Particle::updateLogic(sf::Vector2f forces, int simSpeed) {
-	vel += forces;
-	pos += sf::Vector2f(vel.x * simSpeed, vel.y * simSpeed);
-	sprite.setPosition(pos);
-}
-
-inline sf::Vector2f Particle::getPosition() { return pos; }
-inline sf::Vector2f Particle::getVelocity() { return vel; }
-inline float Particle::getMass() { return mass; }
-
-inline void Particle::setPosition(sf::Vector2f posToLoad) { pos = posToLoad; }
-inline void Particle::setVelocity(sf::Vector2f velToLoad) { vel = velToLoad; }
-inline void Particle::setMass(float massToLoad) {
-	mass = massToLoad;
-	sprite.setRadius(massToLoad * 2);
-	sprite.setOrigin(sf::Vector2f(massToLoad * 2, massToLoad * 2));
 }
